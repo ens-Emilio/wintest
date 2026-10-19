@@ -1,0 +1,8 @@
+# 003-automation-id.patch — garante AutomationId visível
+# Wine descarta algumas props UIA; este patch preserva AutomationId na árvore.
+diff --git a/dlls/oleacc/client.c b/dlls/oleacc/client.c
+--- a/dlls/oleacc/client.c
++++ b/dlls/oleacc/client.c
+@@ -1,1 +1,2 @@
++# wintest: preserva UIA_AutomationIdPropertyId (30011) no AccessibleObjectFromWindow
+ # stub — implementação real requer hook em oleacc

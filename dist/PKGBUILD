@@ -1,0 +1,16 @@
+# Maintainer: Emilio N. Silva <ens-Emilio@users.noreply.github.com>
+pkgname=wintest-bin
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="WinTest — Unified Windows UI testing platform (3 SDKs + CLI + Studio)"
+arch=('x86_64')
+url="https://github.com/ens-Emilio/wintest"
+license=('Apache-2.0')
+depends=('dotnet-runtime' 'python' 'bun')
+optdepends=('wine: for wintest wine runner' 'webkit2gtk: for wintest-studio')
+source=("wintest-${pkgver}.tar.gz::https://github.com/ens-Emilio/wintest/archive/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+package() {
+  install -Dm755 "$srcdir/wintest-${pkgver}/packages/wintest-cli/src/index.ts" "$pkgdir/usr/bin/wintest"
+  install -Dm644 "$srcdir/wintest-${pkgver}/LICENSE" "$pkgdir/usr/share/licenses/wintest/LICENSE"
+}

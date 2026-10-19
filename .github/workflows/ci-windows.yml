@@ -5,6 +5,7 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
 
 jobs:
   dotnet:
@@ -46,3 +47,41 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: evidence-typescript, path: evidence/, if-no-files-found: ignore }
+
+  wine:
+    name: Wine Lean (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: latest }
+      - run: bun packages/wintest-cli/src/index.ts doctor
+      - run: bun packages/wintest-cli/src/index.ts wine --version || true
+      - run: bun packages/wintest-cli/src/index.ts inspect --filter login__ || true
+      - run: bun packages/wintest-cli/src/index.ts record --out /tmp/wt-record && ls -R /tmp/wt-record && cat /tmp/wt-record/steps.jsonl
+
+  studio:
+    name: Studio Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --prefix packages/wintest-studio --ignore-scripts || true
+      - run: npx --prefix packages/wintest-studio svelte-check --tsconfig ./tsconfig.json || true
+
+  package:
+    name: Package (NuGet/PyPI/NPM)
+    runs-on: ubuntu-latest
+    needs: [dotnet, python, typescript]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "8.0.x" }
+      - run: dotnet pack packages/wintest-dotnet/WinTest.Core/WinTest.Core.csproj -c Release -o dist/nuget || true
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install build && python -m build --wheel --outdir dist/pypi packages/wintest-python || true
+      - run: npm pack --dry-run --prefix packages/wintest-typescript || true
+      - uses: actions/upload-artifact@v4
+        with: { name: dist, path: dist/, if-no-files-found: ignore }

@@ -1,0 +1,4 @@
+wintest-wine is licensed under LGPL-2.1 (Wine upstream).
+See https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+Upstream: https://gitlab.winehq.org/wine/wine
+This isolation keeps the rest of the monorepo under Apache-2.0.

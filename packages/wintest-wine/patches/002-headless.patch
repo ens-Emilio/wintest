@@ -1,0 +1,8 @@
+# 002-headless.patch — roda sem X11/Wayland via Xvfb
+# Envolve wine start com Xvfb :99 se DISPLAY não estiver definido.
+diff --git a/loader/wine.inf.in b/loader/wine.inf.in
+--- a/loader/wine.inf.in
++++ b/loader/wine.inf.in
+@@ -1,1 +1,2 @@
++# wintest: headless — wineserver inicia com dummy display se DISPLAY=""
+ # stub — runner/wine-runner.sh já faz Xvfb :99

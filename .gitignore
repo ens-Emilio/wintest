@@ -1,16 +1,19 @@
-# build
+# build artifacts
 **/bin/
 **/obj/
 **/dist/
+!dist/PKGBUILD
+!packages/wintest-studio/src/routes/evidence/
 **/node_modules/
 **/__pycache__/
 **/.venv/
 **/venv/
-**/evidence/
 **/*.db
 **/*.egg-info/
 build/
-dist/
+dist/*.tar.gz
+dist/*.whl
+dist/*.nupkg
 .DS_Store
 .idea/
 .vscode/
@@ -20,3 +23,5 @@ dist/
 .pytest_cache/
 coverage.xml
 .coverage
+# runtime evidence output (only root)
+/evidence/

@@ -1,0 +1,6 @@
+{
+  "build": { "beforeDevCommand": "npm run dev", "beforeBuildCommand": "npm run build", "devUrl": "http://localhost:1420", "frontendDist": "../build" },
+  "app": { "windows": [{ "title": "WinTest Studio", "width": 1100, "height": 700 }], "security": { "csp": null } },
+  "bundle": { "active": true, "targets": "all", "icon": ["icons/icon.png"], "resources": [] },
+  "plugins": { "shell": { "open": true } }
+}
