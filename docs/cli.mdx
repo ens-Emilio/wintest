@@ -1,0 +1,65 @@
+---
+title: CLI
+description: WinTest CLI — comandos e flags (paridade opencode adaptada).
+---
+
+WinTest CLI por padrão mostra ajuda; use comandos para interagir programaticamente (paridade `anomalyco/opencode`).
+
+```bash
+wintest run "testa login"
+wintest --print-logs run --continue
+```
+
+## Opções globais
+
+| Flag | Curto | Descrição |
+|------|-------|-----------|
+| `--print-logs` | | Imprime logs em stderr |
+| `--standalone` | | Servidor privado (não usa background) |
+| `--server <url>` | | Conecta em servidor remoto |
+| `--directory <path>` | | Diretório do projeto |
+| `--continue` | `-c` | Continua última sessão (runId) |
+| `--session <id>` | `-s` | ID de sessão para continuar/criar |
+| `--prompt <txt>` | | Prompt inicial |
+
+## Comandos
+
+### doctor / run / init (WinTest)
+
+| Comando | Descrição |
+|---------|-----------|
+| `doctor` | Verifica ambiente (Bun, .NET, Python, Wine) |
+| `run [stack] --engine` | Dispara testes (all\|dotnet\|python\|typescript) |
+| `init <nome>` | Cria projeto com wintest.config.json |
+
+### wine / record / inspect / studio (WinTest)
+
+| Comando | Descrição |
+|---------|-----------|
+| `wine run <exe> --headless --uia-bridge` | Executa .exe via Wine lean |
+| `record --out <dir> --engine` | Grava interação → PageObject |
+| `inspect [--exe] [--filter]` | Árvore UIA (Accessibility Insights no Linux) |
+| `studio [--dev] [--port]` | App Desktop Tauri |
+
+### upgrade / uninstall / debug / acp / api
+
+| Comando | Aliases | Descrição |
+|---------|---------|-----------|
+| `upgrade [target] --method` | `update` | Atualiza WinTest (bun/docker) |
+| `uninstall --dry-run --force` | | Remove instalação |
+| `debug agents\|config\|paths [name]` | | Diagnóstico |
+| `acp [--login]` | | Agent Client Protocol |
+| `api <op\|method path> --data --header --param` | | Request no servidor |
+
+### agent / auth / mcp / plugin / github / attach
+
+| Comando | Subcomandos | Descrição |
+|---------|-------------|-----------|
+| `agent create\|list` | `--description --mode --permissions --model` | Agentes PageObject |
+| `auth login\|list\|logout\|export\|import\|switch` | `--provider --method` | Credenciais GHCR/NuGet |
+| `mcp add\|list\|auth\|logout` | `--url --header --env --global` | MCP servers |
+| `plugin list\|add\|check\|update\|remove` | `--builtin` | Extensões |
+| `github install\|run` | `--event --token` | Automação GitHub |
+| `attach [url] --dir --continue --session` | | Anexa TUI a backend remoto |
+
+Fonte da verdade: `spec/api-spec.json` — nenhum SDK diverge.

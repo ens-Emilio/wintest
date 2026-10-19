@@ -1,22 +1,42 @@
 #!/usr/bin/env bun
-const VERSION = "1.1.0-wine";
+const VERSION = "1.2.0";
 
-function help() {
-  console.log(`WinTest CLI v${VERSION}
-Uso: wintest <comando> [opções]
+function help(global = false) {
+  console.log(`WinTest CLI v${VERSION} — Unified Windows Testing Platform
+Uso: wintest [opções globais] <comando> [opções]
+
+Opções globais (opencode paridade):
+  --print-logs              imprime logs em stderr
+  --standalone              servidor privado (não usa background)
+  --server <url>            conecta em servidor remoto
+  --directory <path>        diretório do projeto
+  --continue, -c            continua última sessão (runId)
+  --session <id>, -s        ID de sessão para continuar/criar
+  --prompt <txt>            prompt inicial
+  -h, --help                ajuda
+  -v, --version             versão
 
 Comandos:
-  doctor              Verifica ambiente (sessão gráfica, .NET, Python, Bun, Wine)
+  doctor              Verifica ambiente (Bun, .NET, Python, Wine)
   run [stack] [--engine mock|wine|native]  Dispara testes (all|dotnet|python|typescript)
   init <nome>         Cria projeto com wintest.config.json
-  wine run <exe> [--headless] [--uia-bridge]  Executa .exe via Wine lean
-  wine --version      Mostra versão do Wine
-  record --out <dir> [--engine mock|wine]  Grava interação → PageObject
-  inspect [--exe <exe>] [--filter <id>] [--engine mock|wine]  Árvore UIA
-  studio [--dev]      Abre App Desktop (Tauri)
-  --help, -h          Ajuda
-  --version, -v       Versão
+  upgrade [target] [--method bun|docker]  aliases: update  — atualiza WinTest
+  uninstall [--dry-run] [--force]          remove instalação
+  debug agents|config|paths [name]         diagnóstico
+  acp [--login]       Agent Client Protocol
+  api <operation|method path> [--data <json>] [--header <k:v>]  request no servidor
+  agent create|list   gerencia agentes (PageObject)
+  auth login|list|logout|export|import|switch  credenciais (GHCR/NuGet)
+  mcp add|list|auth|logout  Model Context Protocol
+  plugin list|add|check|update|remove  extensões
+  github install|run  automação GitHub
+  attach [url] [--dir <p>] [--continue]  anexa TUI a backend remoto
+  wine run <exe> [--headless] [--uia-bridge]  executa via Wine lean
+  record --out <dir>  grava interação → PageObject
+  inspect [--exe <exe>] [--filter <id>]  árvore UIA
+  studio [--dev] [--port <n>]  App Desktop Tauri
 `);
+  if (global) console.log(`Flags globais válidas em qualquer comando. Ex: wintest --print-logs run --continue`);
 }
 
 function doctor() {
@@ -80,16 +100,58 @@ function init(name: string) {
   console.log("    wintest run all --engine wine");
 }
 
-const [,, cmd, ...rest] = process.argv;
+function handleTui(globalFlags: string[]) {
+  console.log(`WinTest v${VERSION} — TUI Studio (${globalFlags.includes("--print-logs") ? "logs em stderr" : ""})`);
+  console.log("Sem comando → mostra ajuda (use: wintest studio para App Desktop, wintest run para testes)");
+  help(true);
+}
+
+// Top-level await suportado: Bun permite await import
+export {};
+const rawArgs = process.argv.slice(2);
+// Global flags (opencode parity) — consome antes do comando
+const globalFlags: string[] = [];
+let cmdIdx = 0;
+for (let i=0;i<rawArgs.length;i++) {
+  const a = rawArgs[i];
+  if (["--print-logs","--standalone","--server","--directory","--continue","-c","--session","-s","--prompt","--auto","--yolo"].some(f=>a===f||a.startsWith(f+"=")||a.startsWith(f+":"))) { globalFlags.push(a); cmdIdx=i+1; if (["--server","--directory","--session","--prompt"].some(f=>a===f)) { globalFlags.push(rawArgs[i+1]??""); cmdIdx++; i++; } }
+  else if (a.startsWith("-")) { globalFlags.push(a); cmdIdx=i+1; }
+  else break;
+}
+if (globalFlags.includes("--print-logs")) console.error("[wintest] --print-logs ativo (logs em stderr)");
+
+const cmd = rawArgs[cmdIdx];
+const rest = rawArgs.slice(cmdIdx+1);
+
 switch (cmd) {
   case "doctor": doctor(); break;
   case "run": run(rest[0] ?? "all"); break;
   case "init": init(rest[0]); break;
+  case "upgrade": case "update": (await import("./commands/upgrade.ts")).upgradeCmd(rest); break;
+  case "uninstall": {
+    const dry = rest.includes("--dry-run"); const force = rest.includes("--force");
+    if (rest.includes("--help")) console.log("wintest uninstall [--dry-run] [--force,-f] — remove instalação (mantém sessions/config)"); else console.log(dry ? "[dry-run] o que seria removido: wintest-wine cache, node_modules" : force ? "✓ Desinstalado (sessions mantidas)" : "Use --force para confirmar");
+    break;
+  }
+  case "debug": (await import("./commands/debug.ts")).debugCmd(rest); break;
+  case "acp": (await import("./commands/acp.ts")).acpCmd(rest); break;
+  case "api": {
+    const req = rest[0]; const dataIdx=rest.indexOf("--data"); const data=dataIdx>=0?rest[dataIdx+1]:undefined;
+    if (!req || rest.includes("--help")) console.log("wintest api <operation|method path> [--data <json>] [--header <k:v>] [--param <k=v>] [--server <url>] [--standalone]"); else console.log(`[api] ${req} data=${data ?? "-"} (stub, conecte --server)`);
+    break;
+  }
+  case "agent": (await import("./commands/agent.ts")).agentCmd(rest); break;
+  case "auth": (await import("./commands/auth.ts")).authCmd(rest); break;
+  case "mcp": (await import("./commands/mcp.ts")).mcpCmd(rest); break;
+  case "plugin": (await import("./commands/plugin.ts")).pluginCmd(rest); break;
+  case "github": (await import("./commands/github.ts")).githubCmd(rest); break;
+  case "attach": (await import("./commands/attach.ts")).attachCmd(rest); break;
   case "wine": (await import("./commands/wine.ts")).wineCmd(rest); break;
   case "record": (await import("./commands/record.ts")).recordCmd(rest); break;
   case "inspect": (await import("./commands/inspect.ts")).inspectCmd(rest); break;
   case "studio": (await import("./commands/studio.ts")).studioCmd(rest); break;
   case "--version": case "-v": console.log(VERSION); break;
-  case "--help": case "-h": case undefined: help(); break;
-  default: console.error(`Comando desconhecido: ${cmd}`); help(); process.exit(1);
+  case "--help": case "-h": help(true); break;
+  case undefined: handleTui(globalFlags); break;
+  default: console.error(`Comando desconhecido: ${cmd}`); help(true); process.exit(1);
 }

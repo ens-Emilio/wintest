@@ -1,7 +1,7 @@
 {
   "name": "wintest-cli",
-  "version": "1.1.0-wine",
-  "description": "WinTest CLI v2 — doctor/run/wine/record/inspect/studio (Bun, inspirado opencode)",
+  "version": "1.2.0",
+  "description": "WinTest CLI v1.2.0 — paridade opencode (doctor/run/wine/record/inspect/studio/upgrade/debug/agent/auth/mcp/plugin/github/attach/acp)",
   "type": "module",
   "license": "Apache-2.0",
   "repository": { "type": "git", "url": "https://github.com/ens-Emilio/wintest.git" },
