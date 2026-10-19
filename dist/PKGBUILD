@@ -1,6 +1,6 @@
 # Maintainer: Emilio N. Silva <ens-Emilio@users.noreply.github.com>
 pkgname=wintest-bin
-pkgver=1.1.0
+pkgver=1.2.0
 pkgrel=1
 pkgdesc="WinTest — Unified Windows UI testing platform (3 SDKs + CLI + Studio)"
 arch=('x86_64')

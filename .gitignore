@@ -1,9 +1,6 @@
 # build artifacts
 **/bin/
 **/obj/
-**/dist/
-!dist/PKGBUILD
-!packages/wintest-studio/src/routes/evidence/
 **/node_modules/
 **/__pycache__/
 **/.venv/
@@ -11,9 +8,6 @@
 **/*.db
 **/*.egg-info/
 build/
-dist/*.tar.gz
-dist/*.whl
-dist/*.nupkg
 .DS_Store
 .idea/
 .vscode/
@@ -25,3 +19,8 @@ coverage.xml
 .coverage
 # runtime evidence output (only root)
 /evidence/
+# dist artifacts are tracked (for release) except tgz/whl/nupkg build temps
+# Track dist/PKGBUILD, dist/nuget/*, dist/pypi/*, dist/npm/* explicitly
+# studio build dist (not tracked)
+packages/wintest-studio/dist/
+packages/wintest-typescript/dist/

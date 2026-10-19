@@ -1,6 +1,6 @@
 {
   "name": "@wintest/typescript",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "WinTest TypeScript SDK - Automacao Windows via UI Automation (Stack C)",
   "type": "module",
   "main": "./dist/index.js",

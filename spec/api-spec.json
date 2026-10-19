@@ -1,6 +1,6 @@
 {
   "name": "WinTest Unified API Specification",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Contrato unificado - todos os SDKs implementam exatamente esta API",
   "conventions": {
     "naming": {
