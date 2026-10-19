@@ -1,0 +1,9 @@
+WinTest
+Copyright 2026 Emilio N. Silva and WinTest Contributors
+
+This product includes software developed at WineHQ (winehq.org)
+in packages/wintest-wine/, licensed under LGPL-2.1.
+See packages/wintest-wine/COPYING and packages/wintest-wine/LICENSE.wine.
+
+This product includes software inspired by opencode (github.com/anomalyco/opencode)
+for CLI design patterns — not a code fork, no license conveyance required.
