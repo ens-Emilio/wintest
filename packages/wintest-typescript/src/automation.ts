@@ -62,8 +62,11 @@ export class MockWindowHandle implements IWindowHandle {
     return null;
   }
   findElements(locator: { strategy: LocatorStrategy; value: string }): IElementHandle[] {
-    const one = this.findElement(locator);
-    return one ? [one] : [];
+    if (locator.strategy === LocatorStrategy.AutomationId) { const e = this.byId.get(locator.value); return e ? [e] : []; }
+    if (locator.strategy === LocatorStrategy.Name) return this.all.filter(x => x.name === locator.value);
+    if (locator.strategy === LocatorStrategy.ClassName) return this.all.filter(x => x.className === locator.value);
+    if (locator.strategy === LocatorStrategy.XPath) return [...this.all];
+    return [];
   }
   maximize() {} minimize() {} focus() {}
 }

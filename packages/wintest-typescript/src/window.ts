@@ -1,8 +1,8 @@
 import type { WinTestConfig } from "./config.js";
+import type { IElementHandle, IWindowHandle } from "./automation.js";
 import { Locator } from "./locator.js";
 import { LocatorError, InfraError } from "./errors.js";
 import { Element } from "./element.js";
-import type { IWindowHandle } from "./automation.js";
 import type { EvidenceCollector } from "./evidence.js";
 
 export class Window {
@@ -19,13 +19,7 @@ export class Window {
     const start = Date.now();
     while (Date.now() - start < t) {
       if (this.handle.isVisible) return;
-      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, this.cfg.retryIntervalMs);
-    }
-    // fallback sync sleep
-    const deadline = Date.now() + t;
-    while (Date.now() < deadline) {
-      if (this.handle.isVisible) return;
-      const s = Date.now(); while (Date.now() - s < this.cfg.retryIntervalMs) {}
+      Bun.sleepSync(this.cfg.retryIntervalMs);
     }
     throw new InfraError(`Janela não ficou visível após ${t}ms`);
   }
@@ -35,7 +29,7 @@ export class Window {
     const start = Date.now();
     while (Date.now() - start < t) {
       if (!this.handle.isVisible) return;
-      const s = Date.now(); while (Date.now() - s < this.cfg.retryIntervalMs) {}
+      Bun.sleepSync(this.cfg.retryIntervalMs);
     }
     throw new InfraError(`Janela não fechou após ${t}ms`);
   }
@@ -43,18 +37,15 @@ export class Window {
   findElement(locator: Locator, timeoutMs?: number): Element {
     const t = timeoutMs ?? this.cfg.defaultTimeoutMs;
     const start = Date.now();
-    let found: ReturnType<IWindowHandle["findElement"]> = null;
+    let found: IElementHandle | null = null;
     const deadline = Date.now() + t;
     while (Date.now() < deadline) {
       found = this.handle.findElement(locator);
       if (found) break;
-      const s = Date.now(); while (Date.now() - s < this.cfg.retryIntervalMs) {}
+      Bun.sleepSync(this.cfg.retryIntervalMs);
     }
     if (!found) throw new LocatorError(locator, t);
-    // brief stability
-    {
-      const s = Date.now(); while (Date.now() - s < 50) {}
-    }
+    Bun.sleepSync(50);
     this.evidence?.logStep(`FindElement ${locator}`, locator, Date.now() - start, true);
     return new Element(found, this.cfg, this.evidence);
   }

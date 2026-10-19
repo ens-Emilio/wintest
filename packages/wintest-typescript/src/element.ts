@@ -4,7 +4,6 @@ import { LocatorError, AssertionError, InfraError } from "./errors.js";
 import type { IElementHandle } from "./automation.js";
 import type { EvidenceCollector } from "./evidence.js";
 
-function sleepMs(ms: number) { const s = Date.now(); while (Date.now() - s < ms) {} }
 
 export class Element {
   constructor(private handle: IElementHandle, private cfg: WinTestConfig, private evidence?: EvidenceCollector) {}
@@ -14,13 +13,13 @@ export class Element {
     const start = Date.now();
     while (Date.now() - start < this.cfg.defaultTimeoutMs) {
       if (this.handle.isVisible && this.handle.isEnabled) break;
-      sleepMs(this.cfg.retryIntervalMs);
+      Bun.sleepSync(this.cfg.retryIntervalMs);
       if (Date.now() - start >= this.cfg.defaultTimeoutMs) {
         throw new LocatorError(Locator.byAutomationId(this.handle.automationId), this.cfg.defaultTimeoutMs,
           `Elemento não ficou pronto (visible=${this.handle.isVisible}, enabled=${this.handle.isEnabled})`);
       }
     }
-    sleepMs(50);
+    Bun.sleepSync(50);
   }
 
   private exec(action: string, fn: () => void, locator?: unknown): void {
@@ -55,19 +54,19 @@ export class Element {
   waitUntilEnabled(timeoutMs?: number): void {
     const t = timeoutMs ?? this.cfg.defaultTimeoutMs;
     const start = Date.now();
-    while (Date.now() - start < t) { if (this.handle.isEnabled) return; sleepMs(this.cfg.retryIntervalMs); }
+    while (Date.now() - start < t) { if (this.handle.isEnabled) return; Bun.sleepSync(this.cfg.retryIntervalMs); }
     throw new LocatorError(Locator.byAutomationId(this.handle.automationId), t, "Elemento não ficou habilitado");
   }
   waitUntilVisible(timeoutMs?: number): void {
     const t = timeoutMs ?? this.cfg.defaultTimeoutMs;
     const start = Date.now();
-    while (Date.now() - start < t) { if (this.handle.isVisible) return; sleepMs(this.cfg.retryIntervalMs); }
+    while (Date.now() - start < t) { if (this.handle.isVisible) return; Bun.sleepSync(this.cfg.retryIntervalMs); }
     throw new LocatorError(Locator.byAutomationId(this.handle.automationId), t, "Elemento não ficou visível");
   }
   waitUntilTextEquals(text: string, timeoutMs?: number): void {
     const t = timeoutMs ?? this.cfg.defaultTimeoutMs;
     const start = Date.now();
-    while (Date.now() - start < t) { if (this.handle.text === text) return; sleepMs(this.cfg.retryIntervalMs); }
+    while (Date.now() - start < t) { if (this.handle.text === text) return; Bun.sleepSync(this.cfg.retryIntervalMs); }
     throw new AssertionError("WaitUntilTextEquals falhou", text, this.handle.text);
   }
 }

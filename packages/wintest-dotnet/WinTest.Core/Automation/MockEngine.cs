@@ -67,11 +67,14 @@ public sealed class MockWindowHandle : IWindowHandle
         LocatorStrategy.Image => null,
         _ => null
     };
-    public IReadOnlyList<IElementHandle> FindElements(Locator locator)
+    public IReadOnlyList<IElementHandle> FindElements(Locator locator) => locator.Strategy switch
     {
-        var one = FindElement(locator);
-        return one is null ? Array.Empty<IElementHandle>() : new[] { one };
-    }
+        LocatorStrategy.AutomationId => _byAutomationId.TryGetValue(locator.Value, out var e) ? new[] { e } : Array.Empty<IElementHandle>(),
+        LocatorStrategy.Name => _all.Where(x => x.Name == locator.Value).ToArray(),
+        LocatorStrategy.ClassName => _all.Where(x => x.ClassName == locator.Value).ToArray(),
+        LocatorStrategy.XPath => _all.ToArray(),
+        _ => Array.Empty<IElementHandle>()
+    };
     public void Maximize() { }
     public void Minimize() { }
     public void Focus() { }

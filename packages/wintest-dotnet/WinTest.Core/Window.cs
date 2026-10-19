@@ -51,9 +51,6 @@ public sealed class Window
         int t = timeoutMs ?? _cfg.DefaultTimeoutMs;
         var sw = System.Diagnostics.Stopwatch.StartNew();
         IElementHandle? found = null;
-        IElementHandle? Probe() => _handle.FindElement(locator);
-        bool Ready(IElementHandle h) => h.IsVisible;
-        // Polling com retry
         var deadline = DateTime.UtcNow.AddMilliseconds(t);
         while (DateTime.UtcNow < deadline)
         {
@@ -62,12 +59,12 @@ public sealed class Window
             Thread.Sleep(_cfg.RetryIntervalMs);
         }
         if (found is null) throw new LocatorError(locator, t);
-        // Espera visível/habilitado/estável
         var stableSw = System.Diagnostics.Stopwatch.StartNew();
-        while (stableSw.ElapsedMilliseconds < 200) { Thread.Sleep(20); } // estabilidade mínima
+        while (stableSw.ElapsedMilliseconds < 200) { Thread.Sleep(20); }
         _evidence?.LogStep($"FindElement {locator}", locator, sw.ElapsedMilliseconds, true);
         return new Element(found, _cfg, _evidence);
     }
+
 
     public IReadOnlyList<Element> FindElements(Locator locator, int? timeoutMs = null)
     {

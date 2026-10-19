@@ -35,11 +35,15 @@ class MockWindowHandle:
         if s==LocatorStrategy.xpath: return self._all[0] if self._all else None
         return None
     def find_elements(self, locator):
-        one=self.find_element(locator)
-        return [one] if one else []
-    def maximize(self): pass
-    def minimize(self): pass
-    def focus(self): pass
+        from .locator import LocatorStrategy
+        s=locator.strategy
+        if s==LocatorStrategy.automation_id:
+            el=self._by_id.get(locator.value)
+            return [el] if el else []
+        if s==LocatorStrategy.name: return [x for x in self._all if x.name==locator.value]
+        if s==LocatorStrategy.class_name: return [x for x in self._all if x.class_name==locator.value]
+        if s==LocatorStrategy.xpath: return list(self._all)
+        return []
 
 class MockAppHandle:
     def __init__(self, exe: str, args=None, elements: dict | None=None):
