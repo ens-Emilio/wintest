@@ -24,3 +24,6 @@ coverage.xml
 # studio build dist (not tracked)
 packages/wintest-studio/dist/
 packages/wintest-typescript/dist/
+.svelte-kit/
+packages/wintest-studio/.svelte-kit/
+packages/wintest-studio/build/
