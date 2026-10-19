@@ -1,0 +1,11 @@
+{
+  "name": "wintest-cli",
+  "version": "1.0.0",
+  "description": "WinTest CLI - doctor / run / init",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "https://github.com/ens-Emilio/wintest.git" },
+  "bin": { "wintest": "./src/index.ts" },
+  "scripts": { "start": "bun src/index.ts" },
+  "dependencies": {}
+}

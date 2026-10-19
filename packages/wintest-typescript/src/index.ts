@@ -1,0 +1,11 @@
+export { WinTestConfig } from "./config.js";
+export { Locator, LocatorStrategy } from "./locator.js";
+export { WinTestError, LocatorError, AssertionError, InfraError } from "./errors.js";
+export { Application } from "./application.js";
+export { Window } from "./window.js";
+export { Element } from "./element.js";
+export { Assert } from "./assert.js";
+export { PageObject } from "./pageObject.js";
+export { EvidenceCollector } from "./evidence.js";
+export { Keyboard, Mouse } from "./input.js";
+export { MockEngine, MockAppHandle, MockWindowHandle, MockElementHandle } from "./automation.js";

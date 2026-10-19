@@ -1,0 +1,8 @@
+{
+  "defaultTimeoutMs": 10000,
+  "retryIntervalMs": 500,
+  "evidenceDir": "./evidence",
+  "videoEnabled": false,
+  "reportLanguage": "pt-BR",
+  "autoClose": true
+}

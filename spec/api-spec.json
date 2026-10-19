@@ -1,0 +1,228 @@
+{
+  "name": "WinTest Unified API Specification",
+  "version": "1.0.0",
+  "description": "Contrato unificado - todos os SDKs implementam exatamente esta API",
+  "conventions": {
+    "naming": {
+      "concept": "mesmo nome conceitual, adaptado ao casing da linguagem",
+      "dotnet": "PascalCase",
+      "python": "snake_case",
+      "typescript": "camelCase"
+    },
+    "language": "API publica em Ingles, docs e relatorios em Portugues",
+    "wait": "Nenhuma operacao falha imediatamente. Timeout padrao 10s, intervalo 500ms",
+    "evidence": "Toda falha gera screenshot + log automaticamente"
+  },
+  "config": {
+    "defaultTimeoutMs": 10000,
+    "retryIntervalMs": 500,
+    "evidenceDir": "./evidence",
+    "videoEnabled": false,
+    "reportLanguage": "pt-BR",
+    "autoClose": true
+  },
+  "modules": {
+    "Application": {
+      "operations": {
+        "launch": {
+          "params": [
+            "executablePath",
+            "args?",
+            "timeoutMs?",
+            "workingDir?"
+          ],
+          "returns": "Application",
+          "errors": [
+            "InfraError"
+          ]
+        },
+        "attach": {
+          "params": [
+            "processId|windowTitle"
+          ],
+          "returns": "Application"
+        },
+        "close": {
+          "params": [],
+          "returns": "void"
+        },
+        "kill": {
+          "params": [
+            "timeoutMs?"
+          ],
+          "returns": "void"
+        },
+        "isRunning": {
+          "params": [],
+          "returns": "bool"
+        },
+        "mainWindow": {
+          "params": [],
+          "returns": "Window"
+        }
+      }
+    },
+    "Window": {
+      "operations": {
+        "findElement": {
+          "params": [
+            "locator",
+            "timeoutMs?"
+          ],
+          "returns": "Element"
+        },
+        "findElements": {
+          "params": [
+            "locator",
+            "timeoutMs?"
+          ],
+          "returns": "Element[]"
+        },
+        "getTitle": {
+          "params": [],
+          "returns": "string"
+        },
+        "maximize": {
+          "params": [],
+          "returns": "void"
+        },
+        "minimize": {
+          "params": [],
+          "returns": "void"
+        },
+        "focus": {
+          "params": [],
+          "returns": "void"
+        },
+        "waitUntilVisible": {
+          "params": [
+            "timeoutMs?"
+          ],
+          "returns": "void"
+        },
+        "waitUntilClosed": {
+          "params": [
+            "timeoutMs?"
+          ],
+          "returns": "void"
+        }
+      }
+    },
+    "Element": {
+      "actions": [
+        "click",
+        "doubleClick",
+        "rightClick",
+        "hover",
+        "typeText",
+        "clear",
+        "dragAndDrop"
+      ],
+      "queries": [
+        "getText",
+        "getValue",
+        "isVisible",
+        "isEnabled",
+        "isSelected",
+        "getAttribute"
+      ],
+      "waits": [
+        "waitUntilEnabled",
+        "waitUntilVisible",
+        "waitUntilTextEquals"
+      ],
+      "behavior": "Toda acao: exists->visible->enabled->stable antes de executar"
+    },
+    "Locator": {
+      "strategies": [
+        {
+          "name": "automationId",
+          "priority": 1,
+          "description": "Identificador estavel do dev - preferir sempre"
+        },
+        {
+          "name": "name",
+          "priority": 2,
+          "description": "Texto visivel / Accessibility Name"
+        },
+        {
+          "name": "className",
+          "priority": 3,
+          "description": "ClassName + ControlType"
+        },
+        {
+          "name": "xpath",
+          "priority": 4,
+          "description": "Caminho hierarquico UIA"
+        },
+        {
+          "name": "image",
+          "priority": 5,
+          "description": "Busca por imagem - ultimo recurso"
+        }
+      ]
+    },
+    "Input": {
+      "keyboard": [
+        "pressKey",
+        "typeGlobally",
+        "holdKey",
+        "releaseKey"
+      ],
+      "mouse": [
+        "moveTo",
+        "scroll"
+      ],
+      "specialKeys": [
+        "Enter",
+        "Tab",
+        "Escape",
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "Control",
+        "Shift",
+        "Alt",
+        "F1-F12"
+      ]
+    },
+    "Assert": {
+      "operations": [
+        "textEquals",
+        "textContains",
+        "isVisible",
+        "isEnabled",
+        "isChecked",
+        "isUnchecked",
+        "exists",
+        "notExists",
+        "windowTitleEquals"
+      ],
+      "behavior": "Registra esperado vs obtido no log, screenshot automatico em falha"
+    },
+    "Evidence": {
+      "outputs": [
+        "junit.xml",
+        "report.html",
+        "steps.jsonl",
+        "failure.png",
+        "video.mp4?"
+      ],
+      "formats": {
+        "junit": "JUnit XML para CI",
+        "html": "HTML legivel",
+        "log": "JSONL estruturado"
+      }
+    }
+  },
+  "errors": {
+    "LocatorError": "Elemento nao encontrado apos timeout - contem strategy e tempo",
+    "AssertionError": "Assert falhou - contem esperado vs obtido",
+    "InfraError": "App nao iniciou / travou / sem sessao grafica"
+  },
+  "parity": {
+    "versioning": "SemVer sincronizado - 1.2.0 significa os 3 em 1.2.0",
+    "governance": "Mudanca de API so via spec antes de implementacao"
+  }
+}

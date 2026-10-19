@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wintest"
+version = "1.0.0"
+description = "WinTest Python SDK - Automacao Windows via UI Automation (Stack B)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+keywords = ["windows", "ui-automation", "testing", "wintest"]
+license = "Apache-2.0"
+authors = [{ name = "Emilio N. Silva" }]
+maintainers = [{ name = "WinTest Contributors" }]
+urls = { Homepage = "https://github.com/ens-Emilio/wintest", Repository = "https://github.com/ens-Emilio/wintest" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["wintest*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

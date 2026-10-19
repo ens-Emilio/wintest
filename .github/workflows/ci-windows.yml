@@ -1,0 +1,48 @@
+name: WinTest CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  dotnet:
+    name: Stack A (.NET)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: "8.0.x" }
+      - run: dotnet build packages/wintest-dotnet/WinTest.sln -c Release
+      - run: dotnet run --project packages/wintest-dotnet/WinTest.Tests/WinTest.Tests.csproj -c Release
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: evidence-dotnet, path: evidence/, if-no-files-found: ignore }
+
+  python:
+    name: Stack B (Python)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e packages/wintest-python
+      - run: pip install pytest
+      - run: pytest packages/wintest-python/tests -v
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: evidence-python, path: evidence/, if-no-files-found: ignore }
+
+  typescript:
+    name: Stack C (TypeScript)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: latest }
+      - run: bun install --cwd packages/wintest-typescript || npm install --prefix packages/wintest-typescript
+      - run: bun test packages/wintest-typescript/tests/wintest.test.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: evidence-typescript, path: evidence/, if-no-files-found: ignore }

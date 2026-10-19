@@ -1,0 +1,22 @@
+# build
+**/bin/
+**/obj/
+**/dist/
+**/node_modules/
+**/__pycache__/
+**/.venv/
+**/venv/
+**/evidence/
+**/*.db
+**/*.egg-info/
+build/
+dist/
+.DS_Store
+.idea/
+.vscode/
+*.log
+*.pyc
+*.pyo
+.pytest_cache/
+coverage.xml
+.coverage

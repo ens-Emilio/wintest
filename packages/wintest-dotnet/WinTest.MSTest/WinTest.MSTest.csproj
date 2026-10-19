@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>1.0.0</Version>
+    <PackageId>WinTest.MSTest</PackageId>
+    <Description>WinTest MSTest adapter - integracao com MSTest</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/ens-Emilio/wintest</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ens-Emilio/wintest</RepositoryUrl>
+    <Copyright>Copyright 2026 Emilio N. Silva and WinTest Contributors</Copyright>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../WinTest.Core/WinTest.Core.csproj" /></ItemGroup>
+</Project>

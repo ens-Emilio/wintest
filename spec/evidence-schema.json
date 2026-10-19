@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WinTest Evidence Output Schema v1.0",
+  "type": "object",
+  "properties": {
+    "runId": {
+      "type": "string"
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finishedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "config": {
+      "type": "object"
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "passed",
+              "failed",
+              "skipped"
+            ]
+          },
+          "durationMs": {
+            "type": "number"
+          },
+          "error": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "category": {
+                "enum": [
+                  "LocatorError",
+                  "AssertionError",
+                  "InfraError"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "expected": {
+                "type": "string"
+              },
+              "actual": {
+                "type": "string"
+              },
+              "locator": {
+                "type": "object"
+              }
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "timestamp": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                },
+                "locator": {
+                  "type": "object"
+                },
+                "durationMs": {
+                  "type": "number"
+                },
+                "result": {
+                  "enum": [
+                    "ok",
+                    "fail"
+                  ]
+                }
+              }
+            }
+          },
+          "artifacts": {
+            "type": "object",
+            "properties": {
+              "screenshot": {
+                "type": "string"
+              },
+              "video": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
