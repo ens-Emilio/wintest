@@ -10,4 +10,4 @@ from .evidence import EvidenceCollector
 from .input import Keyboard, Mouse
 
 __all__ = ["WinTestConfig","Locator","LocatorStrategy","WinTestError","LocatorError","AssertionError","InfraError","Application","Window","Element","Assert","PageObject","EvidenceCollector","Keyboard","Mouse"]
-__version__ = "1.0.0"
+__version__ = "1.2.0"
